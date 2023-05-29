@@ -1,16 +1,16 @@
-const crypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const crypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const User = require("../models/user");
-const BadRequest = require("../errors/BadRequest");
-const Conflict = require("../errors/Conflict");
+const User = require('../models/user');
+const BadRequest = require('../customErrors/BadRequest');
+const RepeatsEmailError = require('../customErrors/RepeatsEmailError');
+const Forbidden = require('../customErrors/Forbidden');
 const {
   BAD_REQUEST_VALIDATION_ERROR,
-  CONFLICT_ERROR,
+  REPEATS_EMAIL_ERROR,
   WRONG_DATA_RESPONSE,
   SUCCESS_LOGIN,
-} = require("../utils/constants");
-const Forbidden = require("../errors/Forbidden");
+} = require('../utils/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -25,42 +25,40 @@ module.exports.postProfile = async (req, res, next) => {
     });
     res.send(response);
   } catch (error) {
-    if (error.name === "ValidationError") {
-      return next(new BadRequest(BAD_REQUEST_VALIDATION_ERROR));
+    if (error.name === 'ValidationError') {
+      next(new BadRequest(BAD_REQUEST_VALIDATION_ERROR));
+    } else if (error.code === 11000) {
+      next(new RepeatsEmailError(REPEATS_EMAIL_ERROR));
+    } else {
+      next(error);
     }
-    if (error.code === 11000) {
-      return next(new Conflict(CONFLICT_ERROR));
-    }
-    next(error);
   }
 };
 
 module.exports.updateUser = async (req, res, next) => {
   try {
-    const { email } = req.body;
     const user = { name: req.body.name, email: req.body.email };
     const owner = req.user._id;
-    const dbUser = await User.findOne({ email });
     const val = await User.findByIdAndUpdate(owner, user, {
       new: true,
       runValidators: true,
     });
     res.send(val);
   } catch (error) {
-    if (error.name === "ValidationError") {
-      return next(new BadRequest(BAD_REQUEST_VALIDATION_ERROR));
+    if (error.name === 'ValidationError') {
+      next(new BadRequest(BAD_REQUEST_VALIDATION_ERROR));
+    } else if (error.code === 11000) {
+      next(new RepeatsEmailError(REPEATS_EMAIL_ERROR));
+    } else {
+      next(error);
     }
-    if (error.code === 11000) {
-      return next(new Conflict(CONFLICT_ERROR));
-    }
-    next(error);
   }
 };
 
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return next(new Forbidden(WRONG_DATA_RESPONSE));
     }
@@ -70,14 +68,14 @@ module.exports.login = async (req, res, next) => {
     }
     const key = jwt.sign(
       { _id: user._id },
-      NODE_ENV === "production" ? JWT_SECRET : "rabotai",
+      NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
       {
-        expiresIn: "7d",
-      }
+        expiresIn: '7d',
+      },
     );
     res
-      .cookie("jwt", key, {
-        sameSite: "none",
+      .cookie('jwt', key, {
+        sameSite: 'none',
         secure: true,
         maxAge: 7777777,
         httpOnly: true,
@@ -98,5 +96,5 @@ module.exports.me = async (req, res, next) => {
 };
 
 module.exports.signout = async (_, res) => {
-  res.clearCookie("jwt").send({ message: "Выход" });
+  res.clearCookie('jwt').send({ message: 'Выход' });
 };
