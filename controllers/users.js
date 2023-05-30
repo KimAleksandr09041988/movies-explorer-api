@@ -17,7 +17,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 module.exports.postProfile = async (req, res, next) => {
   const { email, password, name } = req.body;
   try {
-    const hashedPassword = await crypt.hash(password, 5);
+    const hashedPassword = await crypt.hash(password, 10);
     const response = await User.create({
       email,
       name,
