@@ -19,7 +19,6 @@ module.exports.postCard = async (req, res, next) => {
     res.send(card);
   } catch (error) {
     if (error.name === 'ValidationError') {
-      console.log(error);
       next(new BadRequest(BAD_REQUEST_VALIDATION_ERROR));
     } else {
       next(error);
