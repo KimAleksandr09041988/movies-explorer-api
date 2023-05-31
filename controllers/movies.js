@@ -6,7 +6,6 @@ const {
   BAD_REQUEST_VALIDATION_ERROR,
   NOT_FOUND_DELETING_CARD,
   FORBIDDEN_RESPONSE,
-  BAD_REQUEST_CAST_ERROR,
 } = require('../utils/constants');
 
 module.exports.postCard = async (req, res, next) => {
@@ -45,13 +44,9 @@ module.exports.deleteCard = async (req, res, next) => {
       next(new Forbidden(FORBIDDEN_RESPONSE));
     } else {
       const deletedCard = await Movie.findByIdAndDelete(id);
-      res.send({ message: `Удалили карточку ${deletedCard.nameRU}` });
+      res.send(deletedCard);
     }
   } catch (error) {
-    if (error.name === 'CastError') {
-      next(new BadRequest(BAD_REQUEST_CAST_ERROR));
-    } else {
-      next(error);
-    }
+    next(error);
   }
 };
