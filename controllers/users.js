@@ -55,7 +55,6 @@ module.exports.updateUser = async (req, res, next) => {
   }
 };
 
-// eslint-disable-next-line consistent-return
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
