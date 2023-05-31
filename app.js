@@ -7,10 +7,8 @@ const bodyParser = require('body-parser');
 const parser = require('cookie-parser');
 const { errors } = require('celebrate');
 const route = require('./routes');
-const { WRONG_URL } = require('./utils/constants');
 const cors = require('./middlewares/cors');
 const limiter = require('./utils/limiter');
-const NotFound = require('./customErrors/NotFound');
 const { InternalServerError } = require('./customErrors/InternalServerError');
 const { requestLogger, errorLogger } = require('./middlewares/loggers');
 
@@ -25,10 +23,6 @@ app.use(requestLogger);
 app.use(cors);
 app.use(limiter);
 app.use(route);
-
-app.use('*', () => {
-  throw new NotFound(WRONG_URL);
-});
 app.use(errorLogger);
 app.use(errors());
 app.use(InternalServerError);
