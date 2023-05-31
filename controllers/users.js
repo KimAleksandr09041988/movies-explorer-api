@@ -23,6 +23,7 @@ module.exports.postProfile = async (req, res, next) => {
       name,
       password: hashedPassword,
     });
+    response.password = ''; // не нашел другого способа
     res.send(response);
   } catch (error) {
     if (error.name === 'ValidationError') {
