@@ -59,28 +59,28 @@ module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-      return next(new Forbidden(WRONG_DATA_RESPONSE));
-    }
     const matched = await crypt.compare(password, user.password);
-    if (!matched) {
-      return next(new Forbidden(WRONG_DATA_RESPONSE));
+    if (!user) {
+      next(new Forbidden(WRONG_DATA_RESPONSE));
+    } else if (!matched) {
+      next(new Forbidden(WRONG_DATA_RESPONSE));
+    } else {
+      const key = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+        {
+          expiresIn: '7d',
+        },
+      );
+      res
+        .cookie('jwt', key, {
+          sameSite: 'none',
+          secure: true,
+          maxAge: 7777777,
+          httpOnly: true,
+        })
+        .send({ message: SUCCESS_LOGIN });
     }
-    const key = jwt.sign(
-      { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
-      {
-        expiresIn: '7d',
-      },
-    );
-    res
-      .cookie('jwt', key, {
-        sameSite: 'none',
-        secure: true,
-        maxAge: 7777777,
-        httpOnly: true,
-      })
-      .send({ message: SUCCESS_LOGIN });
   } catch (error) {
     next(error);
   }
