@@ -6,6 +6,7 @@ const SUCCESS_LOGIN = 'Залогинились успешно)';
 const WRONG_DATA_RESPONSE = 'Неправильный адрес электронной почты или неверный пароль';
 const WRONG_URL = 'Некорректный путь!';
 const WRONG_ACCESS = 'Необходима авторизация!';
+const DELETE_CARD = 'Удалили карточку';
 
 const REGEXP = /^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/;
 
@@ -19,4 +20,5 @@ module.exports = {
   REGEXP,
   WRONG_URL,
   WRONG_ACCESS,
+  DELETE_CARD,
 };

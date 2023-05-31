@@ -11,6 +11,7 @@ const {
   WRONG_DATA_RESPONSE,
   SUCCESS_LOGIN,
 } = require('../utils/constants');
+const JWT_SECRET_LOCAL = require('../utils/config');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -68,7 +69,7 @@ module.exports.login = async (req, res, next) => {
     } else {
       const key = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+        NODE_ENV === 'production' ? JWT_SECRET : JWT_SECRET_LOCAL,
         {
           expiresIn: '7d',
         },

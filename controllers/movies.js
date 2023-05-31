@@ -6,6 +6,7 @@ const {
   BAD_REQUEST_VALIDATION_ERROR,
   NOT_FOUND_DELETING_CARD,
   FORBIDDEN_RESPONSE,
+  DELETE_CARD,
 } = require('../utils/constants');
 
 module.exports.postCard = async (req, res, next) => {
@@ -42,8 +43,8 @@ module.exports.deleteCard = async (req, res, next) => {
     } else if (response.owner.toString() !== req.user._id) {
       next(new Forbidden(FORBIDDEN_RESPONSE));
     } else {
-      const deletedCard = await Movie.deleteOne({ _id: req.params._id });
-      res.send({ message: `Удалили карточку ${deletedCard.nameRU}` });
+      const deletedCard = await Movie.findByIdAndDelete({ _id: req.params._id });
+      res.send({ message: `${DELETE_CARD} ${deletedCard.nameRU}` });
     }
   } catch (error) {
     next(error);
