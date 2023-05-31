@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const BadRequest = require('../customErrors/BadRequest');
 const RepeatsEmailError = require('../customErrors/RepeatsEmailError');
-const Forbidden = require('../customErrors/Forbidden');
+const Unauthorized = require('../customErrors/Unauthorized');
 const {
   BAD_REQUEST_VALIDATION_ERROR,
   REPEATS_EMAIL_ERROR,
@@ -61,9 +61,9 @@ module.exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
     const matched = await crypt.compare(password, user.password);
     if (!user) {
-      next(new Forbidden(WRONG_DATA_RESPONSE));
+      next(new Unauthorized(WRONG_DATA_RESPONSE));
     } else if (!matched) {
-      next(new Forbidden(WRONG_DATA_RESPONSE));
+      next(new Unauthorized(WRONG_DATA_RESPONSE));
     } else {
       const key = jwt.sign(
         { _id: user._id },
