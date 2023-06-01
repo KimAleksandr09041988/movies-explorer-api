@@ -8,7 +8,7 @@ const parser = require('cookie-parser');
 const { errors } = require('celebrate');
 const route = require('./routes');
 const cors = require('./middlewares/cors');
-// const limiter = require('./utils/limiter');
+const limiter = require('./utils/limiter');
 const { InternalServerError } = require('./customErrors/InternalServerError');
 const { requestLogger, errorLogger } = require('./middlewares/loggers');
 
@@ -21,7 +21,7 @@ app.use(parser());
 app.use(helmet());
 app.use(requestLogger);
 app.use(cors);
-// app.use(limiter);
+app.use(limiter);
 app.use(route);
 app.use(errorLogger);
 app.use(errors());
