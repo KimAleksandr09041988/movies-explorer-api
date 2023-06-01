@@ -113,8 +113,6 @@ module.exports.validateCard = celebrate({
 
 module.exports.validateIds = celebrate({
   params: Joi.object({
-    _id: Joi.string().hex().length(24).messages({
-      'string.hex': 'Некорректный id',
-    }),
+    id: Joi.string().required().hex().length(24),
   }),
 });

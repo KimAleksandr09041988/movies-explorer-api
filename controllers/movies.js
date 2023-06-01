@@ -36,14 +36,15 @@ module.exports.getCards = async (req, res, next) => {
 };
 
 module.exports.deleteCard = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    const response = await Movie.findById({ _id: req.params._id });
+    const response = await Movie.findById(id);
     if (!response) {
       next(new NotFound(NOT_FOUND_DELETING_CARD));
     } else if (response.owner.toString() !== req.user._id) {
       next(new Forbidden(FORBIDDEN_RESPONSE));
     } else {
-      const deletedCard = await Movie.findByIdAndDelete({ _id: req.params._id });
+      const deletedCard = await Movie.findByIdAndDelete(id);
       res.send({ message: `${DELETE_CARD} ${deletedCard.nameRU}` });
     }
   } catch (error) {
