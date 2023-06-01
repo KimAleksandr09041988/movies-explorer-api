@@ -2,7 +2,7 @@ const token = require('jsonwebtoken');
 const { WRONG_ACCESS } = require('../utils/constants');
 const Unathorized = require('../customErrors/Unauthorized');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = require('../utils/config');
 
 function auth(req, _, next) {
   const { jwt } = req.cookies;
@@ -11,7 +11,7 @@ function auth(req, _, next) {
   }
   let payload;
   try {
-    payload = token.verify(jwt, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
+    payload = token.verify(jwt, JWT_SECRET);
   } catch (err) {
     throw next(new Unathorized(WRONG_ACCESS));
   }

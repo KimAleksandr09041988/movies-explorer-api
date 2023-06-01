@@ -7,6 +7,7 @@ const WRONG_DATA_RESPONSE = 'Неправильный адрес электро�
 const WRONG_URL = 'Некорректный путь!';
 const WRONG_ACCESS = 'Необходима авторизация!';
 const DELETE_CARD = 'Удалили карточку';
+const EXIT = 'Выход';
 
 const REGEXP = /^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/;
 
@@ -21,4 +22,5 @@ module.exports = {
   WRONG_URL,
   WRONG_ACCESS,
   DELETE_CARD,
+  EXIT,
 };

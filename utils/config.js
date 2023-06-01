@@ -1,7 +1,11 @@
-const BIT_FILM_DB_LOCAL = 'mongodb://localhost:27017/bitfilmsdb';
-const JWT_SECRET_LOCAL = 'some-secret-key';
+const {
+  PORT = 3000,
+  BIT_FILM_DB = 'mongodb://localhost:27017/bitfilmsdb',
+  JWT_SECRET = 'some-secret-key',
+} = process.env;
 
 module.exports = {
-  BIT_FILM_DB_LOCAL,
-  JWT_SECRET_LOCAL,
+  PORT,
+  BIT_FILM_DB,
+  JWT_SECRET,
 };

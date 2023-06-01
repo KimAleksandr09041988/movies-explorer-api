@@ -10,10 +10,9 @@ const {
   REPEATS_EMAIL_ERROR,
   WRONG_DATA_RESPONSE,
   SUCCESS_LOGIN,
+  EXIT,
 } = require('../utils/constants');
-const JWT_SECRET_LOCAL = require('../utils/config');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = require('../utils/config');
 
 module.exports.postProfile = async (req, res, next) => {
   const { email, password, name } = req.body;
@@ -61,28 +60,28 @@ module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email }).select('+password');
-    const matched = await crypt.compare(password, user.password);
     if (!user) {
-      next(new Unauthorized(WRONG_DATA_RESPONSE));
-    } else if (!matched) {
-      next(new Unauthorized(WRONG_DATA_RESPONSE));
-    } else {
-      const key = jwt.sign(
-        { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : JWT_SECRET_LOCAL,
-        {
-          expiresIn: '7d',
-        },
-      );
-      res
-        .cookie('jwt', key, {
-          sameSite: 'none',
-          secure: true,
-          maxAge: 7777777,
-          httpOnly: true,
-        })
-        .send({ message: SUCCESS_LOGIN });
+      throw next(new Unauthorized(WRONG_DATA_RESPONSE));
     }
+    const matched = await crypt.compare(password, user.password);
+    if (!matched) {
+      throw next(new Unauthorized(WRONG_DATA_RESPONSE));
+    }
+    const key = jwt.sign(
+      { _id: user._id },
+      JWT_SECRET,
+      {
+        expiresIn: '7d',
+      },
+    );
+    res
+      .cookie('jwt', key, {
+        sameSite: 'none',
+        secure: true,
+        maxAge: 7777777,
+        httpOnly: true,
+      })
+      .send({ message: SUCCESS_LOGIN });
   } catch (error) {
     next(error);
   }
@@ -98,5 +97,5 @@ module.exports.me = async (req, res, next) => {
 };
 
 module.exports.signout = async (_, res) => {
-  res.clearCookie('jwt').send({ message: 'Выход' });
+  res.clearCookie('jwt').send({ message: EXIT });
 };
