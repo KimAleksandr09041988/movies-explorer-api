@@ -8,15 +8,15 @@ function auth(req, _, next) {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return next(new Unathorized('WRONG_ACCESS'));
+    return next(new Unathorized(WRONG_ACCESS));
   }
 
   const token = authorization.replace('Bearer ', '');
   let payload;
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return next(new Unathorized('WRONG_ACCESS'));
+    return next(new Unathorized(WRONG_ACCESS));
   }
 
   req.user = payload;
