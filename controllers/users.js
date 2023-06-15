@@ -1,6 +1,5 @@
 const crypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
 const User = require('../models/user');
 const BadRequest = require('../customErrors/BadRequest');
 const RepeatsEmailError = require('../customErrors/RepeatsEmailError');
@@ -66,21 +65,14 @@ module.exports.login = async (req, res, next) => {
     if (!matched) {
       throw next(new Unauthorized(WRONG_DATA_RESPONSE));
     }
-    const key = jwt.sign(
+    const token = jwt.sign(
       { _id: user._id },
       JWT_SECRET,
       {
         expiresIn: '7d',
       },
     );
-    res
-      .cookie('jwt', key, {
-        sameSite: 'none',
-        secure: true,
-        maxAge: 7777777,
-        httpOnly: true,
-      })
-      .send({ message: SUCCESS_LOGIN });
+    res.send({token});
   } catch (error) {
     next(error);
   }

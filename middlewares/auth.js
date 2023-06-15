@@ -5,17 +5,22 @@ const Unathorized = require('../customErrors/Unauthorized');
 const { JWT_SECRET } = require('../utils/config');
 
 function auth(req, _, next) {
-  const { jwt } = req.cookies;
-  if (!jwt) {
-    throw next(new Unathorized(WRONG_ACCESS));
+  const { authorization } = req.headers;
+
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return next(new Unathorized('WRONG_ACCESS'));
   }
+
+  const token = authorization.replace('Bearer ', '');
   let payload;
   try {
-    payload = token.verify(jwt, JWT_SECRET);
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
   } catch (err) {
-    throw next(new Unathorized(WRONG_ACCESS));
+    return next(new Unathorized('WRONG_ACCESS'));
   }
+
   req.user = payload;
+
   next();
 }
 
