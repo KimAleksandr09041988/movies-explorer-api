@@ -1,6 +1,7 @@
 const allowedCors = [
   'http://localhost:3000',
   'https://localhost:3000',
+  'https://127.0.0.1:3000',
   'http://movies.kim.nomoredomains.rocks',
   'https://movies.kim.nomoredomains.rocks',
 ];
@@ -13,11 +14,11 @@ module.exports = (req, res, next) => {
   const requestHeaders = req.headers['access-control-request-headers'];
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
-  } else if (method === 'OPTIONS') {
+  }
+  if (method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
-    res.end();
-  } else {
-    next();
+    return res.end();
   }
+  return next();
 };
