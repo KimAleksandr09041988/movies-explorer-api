@@ -76,7 +76,7 @@ module.exports.login = async (req, res, next) => {
       .cookie('jwt', token, {
       /*       secure: true, */
       httpOnly: true,
-      sameSite: true,
+      sameSite: false,
       maxAge: 7 * 24 * 60 * 60,
     })
       .send({ message: SUCCESS_LOGIN });
