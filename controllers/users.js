@@ -11,7 +11,7 @@ const {
   SUCCESS_LOGIN,
   EXIT,
 } = require('../utils/constants');
-const { JWT_SECRET } = require('../utils/config');
+const { NODE_ENV, JWT_SECRET } = require('../utils/config');
 
 module.exports.postProfile = async (req, res, next) => {
   const { email, password, name } = req.body;
@@ -67,12 +67,19 @@ module.exports.login = async (req, res, next) => {
     }
     const token = jwt.sign(
       { _id: user._id },
-      JWT_SECRET,
+        NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
       {
         expiresIn: '7d',
       },
     );
-    res.send({token});
+    res
+      .cookie('jwt', token, {
+      /*       secure: true, */
+      /*       httpOnly: true, */
+      sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60,
+    })
+      .send({ message: SUCCESS_LOGIN });
   } catch (error) {
     next(error);
   }
