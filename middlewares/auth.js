@@ -5,7 +5,7 @@ const Unathorized = require('../customErrors/Unauthorized');
 const { NODE_ENV, JWT_SECRET } = require('../utils/config');
 
 function auth(req, _, next) {
-  const { jwt } = req.cookies;
+  const jwt = req.cookies.jwt;
   if (!jwt) {
     return next(new Unathorized(WRONG_ACCESS));
   }
