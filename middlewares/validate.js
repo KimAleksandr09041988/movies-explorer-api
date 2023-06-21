@@ -108,6 +108,11 @@ module.exports.validateCard = celebrate({
         'any.required': 'Поле не должно быть пустым',
       })
       .required(),
+    isSave: Joi.boolean()
+    .messages({
+      'any.required': 'Поле не должно быть пустым',
+    })
+    .required(),
   }),
 });
 

@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
         message: 'Введён невалидный адрес электронной почты.',
       },
     },
+
   },
   { toObject: { useProjection: true }, toJSON: { useProjection: true } },
 );
