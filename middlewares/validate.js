@@ -103,7 +103,7 @@ module.exports.validateCard = celebrate({
         'any.required': 'Поле не должно быть пустым',
       })
       .required(),
-    movieId: Joi.number()
+    id: Joi.number()
       .messages({
         'any.required': 'Поле не должно быть пустым',
       })
